@@ -1,31 +1,40 @@
+# Kali Linux minimal base
 FROM kalilinux/kali-rolling
 
-# Install core system tools
-RUN apt-get update && \
-    apt-get install -y \
-    sudo \
+# Install core tools (minimal set)
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+    kali-linux-headless \
+    kali-tools-top10 \
+    python3 \
+    python3-pip \
+    python3-venv \
     git \
     curl \
     zsh \
-    kali-linux-core \
-    python3-pip \
+    tmux \
+    nmap \
+    netcat \
+    socat \
+    tcpdump \
+    wireshark-common \
+    dnsutils \
+    iputils-ping \
+    procps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create Gitpod user with sudo
+# Create gitpod user with sudo
 RUN useradd -l -m -s /bin/zsh gitpod && \
     echo "gitpod ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Switch to user context
+# Set up Zsh environment
 USER gitpod
 WORKDIR /home/gitpod
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+COPY --chown=gitpod:gitpod .zshrc .zshrc
 
-# Install common pentesting tools (customize as needed)
-RUN sudo apt-get update && \
-    sudo apt-get install -y \
-    nmap \
-    wireshark-common \
-    burpsuite \
-    sqlmap \
-    metasploit-framework \
-    && sudo apt-get clean
+# Install Python security tools in virtual environment
+RUN python3 -m venv .venv && \
+    . .venv/bin/activate && \
+    pip install --no-cache-dir requests scapy impacket
