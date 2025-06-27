@@ -1,0 +1,25 @@
+{
+  "name": "Kali Security",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+  "forwardPorts": [80, 443, 3000, 8000, 8080],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.hexeditor",
+        "netrecon.vscode-httpyac",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/zsh"
+      }
+    }
+  },
+  "remoteUser": "gitpod",
+  "postCreateCommand": "sudo chsh -s /bin/zsh gitpod"
+}
